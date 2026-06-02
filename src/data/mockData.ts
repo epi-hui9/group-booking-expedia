@@ -82,8 +82,7 @@ export const hotelCatalog: HotelOption[] = [
     id: "wynn",
     name: "Wynn Las Vegas",
     type: "hotel",
-    image:
-      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1600&q=80",
+    image: "/hotel-images/wynn.jpg",
     rating: 4.8,
     reviewCount: 6421,
     pricePerNight: 349,
@@ -98,8 +97,7 @@ export const hotelCatalog: HotelOption[] = [
     id: "venetian",
     name: "The Venetian Resort",
     type: "hotel",
-    image:
-      "https://images.unsplash.com/photo-1605346475498-9182a4ce0a25?auto=format&fit=crop&w=1600&q=80",
+    image: "/hotel-images/venetian.jpg",
     rating: 4.7,
     reviewCount: 8932,
     pricePerNight: 289,
@@ -114,8 +112,7 @@ export const hotelCatalog: HotelOption[] = [
     id: "mgm",
     name: "MGM Grand",
     type: "hotel",
-    image:
-      "https://images.unsplash.com/photo-1455587734955-081b22074882?auto=format&fit=crop&w=1600&q=80",
+    image: "/hotel-images/mgm.jpg",
     rating: 4.4,
     reviewCount: 12410,
     pricePerNight: 189,

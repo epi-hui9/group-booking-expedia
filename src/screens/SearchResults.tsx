@@ -9,6 +9,7 @@ import {
 } from "../data/mockData";
 import type { TripStore } from "../state/useTripStore";
 import { AvatarStack } from "../components/Avatar";
+import { HotelImage } from "../components/HotelImage";
 import {
   ArrowRightIcon,
   CheckIcon,
@@ -100,10 +101,10 @@ export function SearchResults({ store }: { store: TripStore }) {
                 className="group flex overflow-hidden rounded-2xl border border-expedia-line bg-white transition-shadow hover:shadow-card"
               >
                 <div className="relative h-[200px] w-[280px] shrink-0 overflow-hidden">
-                  <img
+                  <HotelImage
                     src={hotel.image}
                     alt={hotel.name}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    imgClassName="transition-transform duration-500 group-hover:scale-[1.03]"
                   />
                   {added && (
                     <div className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-expedia-success px-2.5 py-1 text-[11px] font-semibold text-white">

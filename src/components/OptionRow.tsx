@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ReactionValue } from "../data/mockData";
 import { memberById, TRIP_NIGHTS, totalForStay } from "../data/mockData";
 import { ConsensusMeter } from "./ConsensusMeter";
+import { HotelImage } from "./HotelImage";
 import {
   CheckIcon,
   ChevronRightIcon,
@@ -91,11 +92,7 @@ export function OptionRow({
         onClick={onOpen}
         className="relative h-[108px] w-[148px] shrink-0 overflow-hidden rounded-xl"
       >
-        <img
-          src={option.image}
-          alt={option.name}
-          className="h-full w-full object-cover"
-        />
+        <HotelImage src={option.image} alt={option.name} />
       </button>
 
       <div className="flex flex-1 flex-col">

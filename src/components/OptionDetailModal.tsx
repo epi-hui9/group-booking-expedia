@@ -4,6 +4,7 @@ import type { NotForMeReason, ReactionValue } from "../data/mockData";
 import { TRIP_NIGHTS, totalForStay } from "../data/mockData";
 import { ReactionAvatar } from "./Avatar";
 import { ConsensusMeter } from "./ConsensusMeter";
+import { HotelImage } from "./HotelImage";
 import {
   CheckIcon,
   MapPinIcon,
@@ -75,11 +76,7 @@ export function OptionDetailModal({
       />
       <div className="relative max-h-[90vh] w-full max-w-[560px] overflow-y-auto rounded-2xl bg-white shadow-hero animate-pop">
         <div className="relative h-[220px] overflow-hidden">
-          <img
-            src={option.image}
-            alt={option.name}
-            className="h-full w-full object-cover"
-          />
+          <HotelImage src={option.image} alt={option.name} />
           <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
           <button
             onClick={onClose}
@@ -105,7 +102,7 @@ export function OptionDetailModal({
         </div>
 
         <div className="px-6 py-5">
-          <div className="flex items-end justify-between">
+          <div className="flex items-end justify-between" data-cap="price">
             <div>
               <div className="font-display text-[24px] font-extrabold leading-none text-expedia-ink">
                 ${option.pricePerNight}

@@ -1,9 +1,21 @@
-# GIF Capture Guide
+# Demo Capture Guide
 
-Short, slide-ready GIFs (~3 seconds each) of isolated product moments for
-the pitch deck. This iteration ships **pre-rendered GIFs and screenshots**
-so you don't have to capture anything to present. Re-capture only if the UI
-changes.
+Slide-ready clips of seven isolated product moments, captured with a polished
+demo style: a visible virtual cursor, click ripples, smooth camera zoom/pan,
+and a focus spotlight. Pre-rendered assets are committed, so you don't need
+to capture anything to present.
+
+---
+
+## Recommended for slides: use the MP4
+
+For Google Slides, PowerPoint, and Keynote, **insert the MP4** — it is the
+highest-quality, smallest, and crispest artifact (text stays sharp, ~1–2 MB
+each, H.264 1440-wide @30fps, looping when set to autoplay/loop).
+
+Use the GIF only for tools that accept images but not video. The GIFs are
+optimized (1040-wide @14fps, ~3.5–7 MB) and stay readable, but MP4 is clearly
+better. The PNGs are a static fallback for any final-state slide.
 
 ---
 
@@ -11,87 +23,89 @@ changes.
 
 ```
 assets/
-  demo-gifs/                      committed, slide-ready GIFs
-    01-add-hotel-to-group-trip.gif
-    02-open-group-trip-dashboard.gif
-    03-group-consensus-visible.gif
-    04-not-for-me-reason.gif
-    05-remove-option.gif
-    06-price-clarity.gif
-    07-continue-to-booking-handoff.gif
-    _video/                       raw .webm recordings (git-ignored)
-  demo-captures/                  committed, final-state PNG screenshots
+  demo-videos/                    PREFERRED — slide-ready clips
+    01-…mp4 … 07-…mp4             H.264, 1440w, ~1–2 MB
+    01-…webm … 07-…webm           VP9 alternate
+  demo-gifs/                      GIF fallback (looping)
+    01-…gif … 07-…gif             1040w, optimized
+    _video/                       raw recordings (git-ignored)
+  demo-captures/                  final-state PNG screenshots
     01-…png … 07-…png
 ```
 
-GIFs are ~960px wide at 15fps — clean on a slide without being huge. The
-PNG screenshots are a high-resolution fallback if a slide tool prefers a
-static image, or if a GIF is too heavy for a given deck.
+---
+
+## Shot list (what each clip shows)
+
+| File                              | Moment                                                     |
+| --------------------------------- | ---------------------------------------------------------- |
+| `01-add-hotel-to-group-trip`      | Zoom to the card → cursor clicks **Add to group trip** → toast |
+| `02-open-group-trip-dashboard`    | Cursor clicks the single top-level **View group trip** entry → dashboard |
+| `03-group-consensus-visible`      | Pan/zoom into the hero: *"The group is leaning toward Wynn Las Vegas"* |
+| `04-not-for-me-reason`            | React **Not for me** → pick a reason chip → it joins **"Why not for me"** |
+| `05-remove-option`                | `⋯` menu → **Remove from trip** → confirm → option removed (toast) |
+| `06-price-clarity`                | Spotlight on per-night **and** total price in the detail view |
+| `07-continue-to-booking-handoff`  | **Continue to booking** → **Continue to checkout** → calm handoff |
+
+Each clip is ~4.5–7.5 seconds and holds on the final state so a slide
+audience can read the result. The "Not for me" moment is shown as a calm
+reason/reservation, never a shaming block.
 
 ---
 
-## Shot list (what each asset shows)
+## Capture style (built into the capture system)
 
-| File                              | Moment                                                    |
-| --------------------------------- | --------------------------------------------------------- |
-| `01-add-hotel-to-group-trip`      | Search results → **Add to group trip** → confirmation toast |
-| `02-open-group-trip-dashboard`    | Top-level **View group trip** → shared dashboard opens     |
-| `03-group-consensus-visible`      | Dashboard hero: *"The group is leaning toward Wynn Las Vegas"* |
-| `04-not-for-me-reason`            | React **Not for me** → reason chip → appears in "Why not for me" |
-| `05-remove-option`                | Organizer removes an option (`⋯` → Remove → confirm → fade) |
-| `06-price-clarity`                | Per-night **and** total price on the option detail         |
-| `07-continue-to-booking-handoff`  | **Continue to booking** → final aligned handoff screen     |
+- **Virtual cursor** — a DOM overlay arrow (not the OS cursor) that moves
+  smoothly to each target and is always visible in the output.
+- **Click ripple** — an Expedia-blue pulse on every click, with a subtle
+  cursor "press."
+- **Camera zoom / pan** — a smooth transform on the app that frames the
+  relevant card/button/panel, then eases back out.
+- **Spotlight** — a soft radial dim that focuses attention (used on the
+  "Why not for me" read-out and the price block).
+- **Clean frame** — no browser chrome, no dev UI, no broken images, no
+  console/debug text. Captured at 1440×900.
+
+All of this is **capture-only**. It is injected at recording time by
+`scripts/capture-kit.js` and is never part of the shipped app or any
+production functionality.
 
 ---
 
-## How to re-capture
+## How to regenerate
 
 Requirements:
 
-- Node 18+ and the project's dependencies installed (`npm install`).
-- A Chromium browser for Playwright: `npx playwright install chromium`.
-- `ffmpeg` on your PATH (for the GIF conversion step). On macOS:
-  `brew install ffmpeg`. If `ffmpeg` is missing, the script still produces
-  the `.webm` recordings and PNG screenshots; only the `.gif` step is
-  skipped.
+- `npm install`, then a Chromium for Playwright: `npx playwright install chromium`.
+- `ffmpeg` on your PATH (macOS: `brew install ffmpeg`). Without ffmpeg the
+  script still writes the raw `.webm` recordings and PNG screenshots; only
+  the MP4/WebM/GIF encoding step is skipped.
 
 Steps:
 
 ```bash
-# 1) Build and serve the app on a fixed port
+# 1) Build and serve on a fixed port
 npm run build
 npm run preview -- --port 4173 --strictPort
 
 # 2) In a second terminal, run the capture
 node scripts/capture-gifs.mjs
-# (optional) point at a different server:
-#   BASE_URL=http://localhost:5173 node scripts/capture-gifs.mjs
+#   (optional) BASE_URL=http://localhost:5173 node scripts/capture-gifs.mjs
 ```
 
-The script (`scripts/capture-gifs.mjs`) opens an isolated browser context
-per moment, performs the clicks, records a short video, saves a final-state
-screenshot, and converts each video to a GIF with ffmpeg.
-
----
-
-## How to use the GIFs in the deck
-
-- Drop one GIF per slide to narrate a single product beat. The recommended
-  story order is `01 → 02 → 03 → 04 → 05 → 06 → 07`.
-- In Keynote/PowerPoint/Google Slides, insert the GIF as an image; it loops
-  automatically.
-- If a GIF feels too fast or too large for a venue, use the matching PNG in
-  `assets/demo-captures/` as a static fallback.
+The script records each moment, then encodes a trimmed, slide-ready MP4
+(primary), WebM, and GIF, plus a clean PNG. Per-scene clip windows
+(`start` + `dur`) are defined at the top of `main()` in
+`scripts/capture-gifs.mjs`; adjust them there if you change timings.
 
 ---
 
 ## Notes & limitations
 
-- Capture uses a 1280×800 viewport at 2× device scale for crispness.
-- Imagery is loaded from remote Unsplash URLs, so capture needs network
-  access at the time you run it.
-- GIF file sizes are a few MB each (lossless-ish palette). If you need them
-  smaller, lower the `fps`/`scale` values in `scripts/capture-gifs.mjs` or
-  trim with any GIF optimizer.
-- The presenter-only walkthrough overlay is disabled during capture, so it
-  never appears in the assets.
+- Hotel imagery is bundled locally under `public/hotel-images/`, so capture
+  no longer depends on a remote CDN.
+- GIF sizes are a few MB; if you need them smaller, lower `fps`/`scale` or the
+  palette `max_colors` in the GIF step of `scripts/capture-gifs.mjs`, or run
+  the GIFs through an optimizer (e.g. `gifsicle --lossy`).
+- Capture mode is presentation-only and adds no production behavior to the
+  prototype.

@@ -1,4 +1,28 @@
-# Feedback Changes — Iteration 2
+# Feedback Changes
+
+## Iteration 3 — Visual fixes & presentation assets
+
+A focused visual-correctness pass (no product/scope changes):
+
+- **Fixed broken hotel imagery.** The Venetian Resort image was a dead remote
+  URL (404) rendering as alt text. All hotel images are now bundled locally
+  under `public/hotel-images/` (`wynn.jpg`, `venetian.jpg`, `mgm.jpg`) and
+  referenced by local path, so nothing depends on a remote CDN.
+- **Graceful image fallback.** A new `HotelImage` component renders a calm,
+  Expedia-grade placeholder (soft gradient + hotel icon + name) if any image
+  fails to load — never the browser's broken-image icon or raw alt text. All
+  hotel `<img>` usages now route through it.
+- **Rebuilt the demo capture system** for slide-ready output: a capture-only
+  overlay (`scripts/capture-kit.js`) adds a visible virtual cursor, click
+  ripples, smooth camera zoom/pan, and a focus spotlight. Clips are encoded to
+  **MP4 (preferred), WebM, and GIF**, plus PNG stills. See
+  [`GIF_CAPTURE_GUIDE.md`](./GIF_CAPTURE_GUIDE.md). Assets live in
+  `assets/demo-videos/`, `assets/demo-gifs/`, and `assets/demo-captures/`.
+- Capture tooling is presentation-only and adds no production functionality.
+
+---
+
+## Iteration 2 — Feedback-driven product changes
 
 This document records the changes made to the Shared Decision-Making
 Dashboard prototype in response to peer feedback and instructor feedback

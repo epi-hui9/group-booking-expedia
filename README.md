@@ -43,8 +43,12 @@ weak option → **Continue to booking** → ready/handoff screen.
   engineering notes (scope, flow, data, design tokens).
 - [`docs/FEEDBACK_CHANGES.md`](docs/FEEDBACK_CHANGES.md) — what changed in
   the latest feedback-driven iteration.
-- [`docs/GIF_CAPTURE_GUIDE.md`](docs/GIF_CAPTURE_GUIDE.md) — slide-ready
-  GIFs/screenshots and how to re-capture them.
+- [`docs/GIF_CAPTURE_GUIDE.md`](docs/GIF_CAPTURE_GUIDE.md) — slide-ready demo
+  clips (MP4 preferred, plus WebM/GIF/PNG) and how to re-capture them.
+
+Hotel imagery is bundled locally under `public/hotel-images/`. Demo assets
+live in `assets/demo-videos/` (MP4/WebM), `assets/demo-gifs/`, and
+`assets/demo-captures/`.
 
 ## Tech
 

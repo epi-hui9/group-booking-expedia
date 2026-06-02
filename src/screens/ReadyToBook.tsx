@@ -10,6 +10,7 @@ import { rankOptions } from "../state/useTripStore";
 import { TripHeader } from "../components/TripHeader";
 import { ReactionAvatar } from "../components/Avatar";
 import { ConsensusMeter } from "../components/ConsensusMeter";
+import { HotelImage } from "../components/HotelImage";
 import {
   ArrowRightIcon,
   CalendarIcon,
@@ -72,11 +73,7 @@ export function ReadyToBook({ store }: { store: TripStore }) {
         <section className="overflow-hidden rounded-2xl border border-expedia-line bg-white shadow-hero">
           <div className="flex">
             <div className="relative h-[300px] w-[420px] shrink-0 overflow-hidden">
-              <img
-                src={leading.image}
-                alt={leading.name}
-                className="h-full w-full object-cover"
-              />
+              <HotelImage src={leading.image} alt={leading.name} />
               <div className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-expedia-success px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow">
                 <CheckIcon size={11} strokeWidth={3} />
                 Group aligned

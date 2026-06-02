@@ -1,5 +1,6 @@
 import { members, memberById, TRIP_NIGHTS, totalForStay } from "../data/mockData";
 import { ReactionAvatar } from "./Avatar";
+import { HotelImage } from "./HotelImage";
 import { ConsensusMeter } from "./ConsensusMeter";
 import {
   ArrowRightIcon,
@@ -25,11 +26,7 @@ export function HeroConsensus({
     <section className="overflow-hidden rounded-2xl border border-expedia-line bg-white shadow-hero">
       <div className="flex">
         <div className="relative h-[260px] w-[360px] shrink-0 overflow-hidden">
-          <img
-            src={leading.image}
-            alt={leading.name}
-            className="h-full w-full object-cover"
-          />
+          <HotelImage src={leading.image} alt={leading.name} />
           <div className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-expedia-yellow px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-expedia-ink shadow">
             <TrophyIcon size={12} />
             Leading option
