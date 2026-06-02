@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Raw capture intermediates (the final GIFs/screenshots are committed)
+assets/demo-gifs/_video/
+test-results/

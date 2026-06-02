@@ -23,6 +23,7 @@ export function Dashboard({ store }: { store: TripStore }) {
     <div className="min-h-[calc(100vh-64px)] bg-expedia-surface">
       <TripHeader
         onBack={() => store.setScreen("search")}
+        showTabs
         subline={
           <>
             {groupTrip.destination} · {groupTrip.dates} · {groupTrip.guests}{" "}
@@ -107,6 +108,8 @@ export function Dashboard({ store }: { store: TripStore }) {
                     currentUserId={currentUserId}
                     onReact={(v) => store.setReaction(o.id, currentUserId, v)}
                     onOpen={() => store.setDetailOptionId(o.id)}
+                    onRemove={() => store.removeOption(o.id)}
+                    canRemove={ranked.length > 1}
                   />
                 ))}
               </div>

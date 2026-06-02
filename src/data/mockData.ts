@@ -24,9 +24,31 @@ export type HotelOption = {
 
 export type ReactionMap = Record<string, ReactionValue>;
 
+export type NotForMeReason = {
+  chip: string;
+  note?: string;
+};
+
+export type ReasonMap = Record<string, NotForMeReason>;
+
 export type OptionWithReactions = HotelOption & {
   reactionsByMember: ReactionMap;
+  reasonsByMember: ReasonMap;
 };
+
+export const TRIP_NIGHTS = 3;
+
+export const formatCurrency = (value: number) => `$${value.toLocaleString()}`;
+
+export const totalForStay = (pricePerNight: number) =>
+  pricePerNight * TRIP_NIGHTS;
+
+export const NOT_FOR_ME_REASONS = [
+  "Too expensive",
+  "Too far from the group plan",
+  "Not the right room setup",
+  "Wrong vibe",
+] as const;
 
 export type GroupTrip = {
   id: string;
@@ -124,6 +146,18 @@ export const initialReactions: Record<string, ReactionMap> = {
     sam: null,
     priya: null,
     leo: null,
+  },
+};
+
+export const initialReasons: Record<string, ReasonMap> = {
+  wynn: {
+    sam: { chip: "Too expensive", note: "A bit over my budget for the weekend." },
+  },
+  venetian: {
+    maya: {
+      chip: "Not the right room setup",
+      note: "Hoping for two queen beds so we don't split up.",
+    },
   },
 };
 

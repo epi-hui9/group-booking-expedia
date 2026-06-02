@@ -1,0 +1,11 @@
+HOW TO OPEN THIS DEMO
+=====================
+
+1. Install Node.js from nodejs.org (free).
+2. Open Terminal (Mac) or Command Prompt (Windows).
+3. Type: cd then a space, then drag this folder into the window. Press Enter.
+4. First time only, type: npm install then Enter. Wait until it finishes.
+5. Type: npm run dev then Enter.
+6. Copy the http:// link shown and paste it into your browser.
+
+To stop: click the Terminal window and press Ctrl + C.

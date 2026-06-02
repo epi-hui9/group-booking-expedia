@@ -1,5 +1,10 @@
-import { useMemo } from "react";
-import { groupTrip, members } from "../data/mockData";
+import { useMemo, useState } from "react";
+import {
+  groupTrip,
+  members,
+  TRIP_NIGHTS,
+  totalForStay,
+} from "../data/mockData";
 import type { TripStore } from "../state/useTripStore";
 import { rankOptions } from "../state/useTripStore";
 import { TripHeader } from "../components/TripHeader";
@@ -8,6 +13,7 @@ import { ConsensusMeter } from "../components/ConsensusMeter";
 import {
   ArrowRightIcon,
   CalendarIcon,
+  CheckCircleIcon,
   CheckIcon,
   MapPinIcon,
   ShieldIcon,
@@ -18,6 +24,7 @@ import {
 export function ReadyToBook({ store }: { store: TripStore }) {
   const ranked = useMemo(() => rankOptions(store.options), [store.options]);
   const leading = ranked.find((r) => r.isLeading) ?? ranked[0];
+  const [handedOff, setHandedOff] = useState(false);
 
   if (!leading) {
     return (
@@ -144,34 +151,59 @@ export function ReadyToBook({ store }: { store: TripStore }) {
                       / night
                     </span>
                   </div>
-                  <div className="mt-0.5 text-[12px] text-expedia-slate">
-                    ${leading.pricePerNight * 3} total · 3 nights
+                  <div className="mt-0.5 text-[12.5px] font-medium text-expedia-slate">
+                    ${totalForStay(leading.pricePerNight).toLocaleString()}{" "}
+                    total for {TRIP_NIGHTS} nights · {groupTrip.guests} guests
                   </div>
                 </div>
-                <button
-                  onClick={() => store.setHandoffOpen(true)}
-                  className="btn-primary"
-                >
-                  Continue to booking
-                  <ArrowRightIcon size={14} />
-                </button>
+                {handedOff ? (
+                  <span className="inline-flex items-center gap-2 rounded-full bg-expedia-success-soft px-4 py-2.5 text-sm font-semibold text-expedia-success">
+                    <CheckCircleIcon size={16} />
+                    Handed off to checkout
+                  </span>
+                ) : (
+                  <button
+                    onClick={() => setHandedOff(true)}
+                    className="btn-primary"
+                  >
+                    Continue to checkout
+                    <ArrowRightIcon size={14} />
+                  </button>
+                )}
               </div>
             </div>
           </div>
         </section>
 
-        <div className="mt-5 flex items-start gap-3 rounded-2xl border border-expedia-line bg-white p-5">
-          <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-expedia-blue-soft text-expedia-blue">
-            <ShieldIcon size={15} />
-          </span>
-          <div className="text-[13.5px] leading-relaxed text-expedia-slate">
-            <span className="font-semibold text-expedia-ink">
-              Alignment is visible. Commitment is still yours.
-            </span>{" "}
-            The dashboard never auto-books. It only helps the group see where
-            consensus is forming.
+        {handedOff ? (
+          <div className="mt-5 flex items-start gap-3 rounded-2xl border border-expedia-success/30 bg-expedia-success-soft/50 p-5 animate-fadeIn">
+            <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-expedia-success text-white">
+              <CheckCircleIcon size={16} />
+            </span>
+            <div className="text-[13.5px] leading-relaxed text-expedia-slate">
+              <span className="font-semibold text-expedia-ink">
+                The group is aligned and moving forward together.
+              </span>{" "}
+              Next, the group reviews rooms, taxes, and payment details in
+              Expedia checkout. No one is charged yet — the final booking stays
+              a deliberate group action.
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="mt-5 flex items-start gap-3 rounded-2xl border border-expedia-line bg-white p-5">
+            <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-expedia-blue-soft text-expedia-blue">
+              <ShieldIcon size={15} />
+            </span>
+            <div className="text-[13.5px] leading-relaxed text-expedia-slate">
+              <span className="font-semibold text-expedia-ink">
+                Alignment is visible. Commitment is still yours.
+              </span>{" "}
+              You&rsquo;ll review rooms, taxes, and payment details next. The
+              dashboard never auto-books — it only helps the group see where
+              consensus is forming.
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

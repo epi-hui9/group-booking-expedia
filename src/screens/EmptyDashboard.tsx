@@ -3,7 +3,7 @@ import { TripHeader } from "../components/TripHeader";
 import { groupTrip } from "../data/mockData";
 
 const steps = [
-  { n: "1", title: "Add options", body: "Add hotels or flights from Expedia search." },
+  { n: "1", title: "Add hotels", body: "Add stays from Expedia search to the group trip." },
   { n: "2", title: "Members react", body: "Each member reacts Yes or Not for me." },
   { n: "3", title: "See the group's direction", body: "The dashboard shows where consensus is forming." },
 ];
@@ -13,6 +13,7 @@ export function EmptyDashboard({ store }: { store: TripStore }) {
     <div className="min-h-[calc(100vh-64px)] bg-expedia-surface">
       <TripHeader
         onBack={() => store.setScreen("search")}
+        showTabs
         subline={
           <>
             {groupTrip.destination} · {groupTrip.dates} · {groupTrip.guests}{" "}
@@ -24,7 +25,7 @@ export function EmptyDashboard({ store }: { store: TripStore }) {
       <div className="mx-auto max-w-[1200px] px-8 py-10">
         <div className="mx-auto max-w-[720px]">
           <h2 className="font-display text-[28px] font-extrabold leading-tight text-expedia-ink">
-            Add hotels or flights to start comparing options with your group.
+            Add hotels to start comparing options with your group.
           </h2>
 
           <div className="mt-6 rounded-2xl border border-expedia-line bg-white p-8 text-center shadow-card">
@@ -45,7 +46,12 @@ export function EmptyDashboard({ store }: { store: TripStore }) {
               >
                 Browse hotels
               </button>
-              <button className="btn-secondary">Browse flights</button>
+              <span className="inline-flex cursor-default items-center gap-2 rounded-full border border-expedia-line bg-expedia-surface px-5 py-2.5 text-sm font-semibold text-expedia-mute">
+                Flights
+                <span className="rounded-full bg-expedia-line-soft px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-expedia-slate">
+                  Coming soon
+                </span>
+              </span>
             </div>
           </div>
 

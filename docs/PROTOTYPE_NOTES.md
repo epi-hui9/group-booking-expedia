@@ -5,6 +5,12 @@ document is intentionally self-contained: a future agent should be able to
 pick up the project from these notes alone, without reading conversation
 history.
 
+> **Iteration 2 update.** This prototype was revised based on peer and
+> instructor feedback. For a focused changelog of that pass, see
+> [`FEEDBACK_CHANGES.md`](./FEEDBACK_CHANGES.md). For the slide-ready demo
+> assets, see [`GIF_CAPTURE_GUIDE.md`](./GIF_CAPTURE_GUIDE.md). These notes
+> below already reflect the current state of the code.
+
 ---
 
 ## 1. Project purpose
@@ -53,19 +59,29 @@ The product philosophy line used throughout:
 
 ## 4. What is included
 
-- A simplified Expedia-style search results entry point.
+- A simplified Expedia-style search results entry point. Hotels already in
+  the trip show an **"In group trip"** status chip; the single trip-level
+  **View group trip** entry point lives once at the top (not on every card).
 - An empty group trip dashboard with a single clear next action.
 - A main dashboard that ranks options by group support and surfaces the
-  leading option.
-- A clean, focused option detail modal where reactions can be changed.
-- A ready-to-book screen and a handoff modal that hands off to (mock)
-  booking without performing it.
+  leading option. A subtle, trip-level **Hotels / Flights** tab row makes
+  clear that this is the hotel decision surface inside a broader group trip.
+  **Flights is a non-functional "Coming soon" affordance** — there is no
+  flight search, inventory, or booking flow.
+- A clean, focused option detail modal where reactions can be changed, with
+  an optional **"Why not for me"** reason mechanism (reason chips + an
+  optional short note) and an aggregated read-out of group friction.
+- An organizer **Remove from trip** control on each option (overflow `⋯`
+  menu → lightweight inline confirm → clean fade-out). Front-end state only.
+- A single **Ready-to-book / handoff screen** that confirms alignment and
+  hands off to (mock) checkout without performing a booking. (The earlier
+  separate handoff modal was removed; its guardrail copy was merged here.)
 - An organizer-facing **lightweight reminder micro-interaction** for group
   members who have not weighed in yet. The reminder is a simulated
   front-end action only; no notification infrastructure, email, SMS, or
   backend is involved. See Section 9 for behavior.
-- A small floating dev navigator usable for live presenting (off by
-  default, see Section 15).
+- A small floating presenter-only navigator usable for live presenting (off
+  by default, see Section 15).
 
 ---
 
@@ -92,29 +108,39 @@ make each next click obvious without verbal explanation.
 
 1. **Search Results** — the presenter lands on Expedia's stays search.
    The traveler is planning **Vegas Weekend** with 6 friends. A subtle
-   banner under the search bar makes the group trip context visible.
+   banner under the search bar makes the group trip context visible and
+   carries the single **View group trip** entry point.
 2. **Add to group trip** — the third hotel (MGM Grand) is not yet in the
    trip. Clicking **Add to group trip** marks it as added and shows a
    confirmation toast with a single primary next action: **View group
    trip**.
 3. **Dashboard** — the headline answers the only question that matters:
    *"The group is leaning toward Wynn Las Vegas."* The hero card shows the
-   leading option with consensus visualization and the primary action
-   **Continue to booking**.
-4. **React on an option** — the presenter clicks **Yes** or **Not for me**
-   on a compact comparison row, or opens the option detail modal. The
-   consensus state updates immediately.
-5. **Optional reminder** — in the **Who still needs to weigh in?** side
+   leading option with consensus visualization, per-night **and** total
+   pricing, and the primary action **Continue to booking**. The
+   **Hotels / Flights** tabs sit just under the trip header (Flights is
+   "Coming soon").
+4. **See the friction** — the **"Why not for me"** context surfaces where
+   the hesitation is (e.g., *Sam: too expensive*) on the hero card, on each
+   option row, and in the **Who still needs to weigh in?** panel.
+5. **React with a reason** — the presenter clicks **Yes** or **Not for me**
+   on a compact comparison row, or opens the option detail modal. After
+   choosing **Not for me**, an optional reason picker appears (chips +
+   short note); the submitted reason joins the option's "Why not for me"
+   read-out.
+6. **Optional reminder** — in the **Who still needs to weigh in?** side
    panel, the organizer can click a small **Remind** button next to any
    member who has no reaction yet. The button swaps to a quiet
    "Reminder sent" chip and a subtle toast confirms the action. This is a
    simulated UI state only.
-6. **Ready to book** — clicking **Continue to booking** routes to the
-   ready screen. One hero card, one CTA, one guardrail line.
-7. **Handoff modal** — clicking **Continue to booking** again opens a
-   short modal that confirms the handoff: *"You'll review rooms, taxes,
-   and payment details next. No one is charged yet."* No real checkout is
-   built.
+7. **Remove a weak option** — the organizer can open an option's `⋯` menu
+   and choose **Remove from trip**, confirm inline, and the card fades out.
+   Front-end state only; nothing is removed automatically.
+8. **Ready to book / handoff** — clicking **Continue to booking** routes to
+   the single ready/handoff screen: *"The group is ready to move forward
+   with Wynn Las Vegas."* Clicking **Continue to checkout** resolves into a
+   calm inline confirmation (*"Handed off to checkout. No one is charged
+   yet."*). No real checkout is built.
 
 ---
 
@@ -126,8 +152,10 @@ make each next click obvious without verbal explanation.
 | 2   | Empty Dashboard       | `src/screens/EmptyDashboard.tsx`      |
 | 3   | Main Dashboard        | `src/screens/Dashboard.tsx`           |
 | 4   | Option Detail (modal) | `src/components/OptionDetailModal.tsx` |
-| 5   | Ready to Book         | `src/screens/ReadyToBook.tsx`         |
-| 5b  | Handoff modal         | `src/components/HandoffModal.tsx`     |
+| 5   | Ready to Book / Handoff | `src/screens/ReadyToBook.tsx`       |
+
+The previously separate `HandoffModal.tsx` was removed in iteration 2; the
+ready screen is now the single, self-contained booking handoff surface.
 
 Supporting components live in `src/components/`. The shared trip header,
 hero consensus card, compact option rows, "Who still needs to weigh in?"
@@ -176,13 +204,29 @@ type HotelOption = {
 
 type ReactionValue = "yes" | "not_for_me" | null;
 type ReactionMap   = Record<string, ReactionValue>;
+
+// "Why not for me" context (iteration 2)
+type NotForMeReason = { chip: string; note?: string };
+type ReasonMap      = Record<string, NotForMeReason>; // by member id
+
+// Pricing helpers
+const TRIP_NIGHTS = 3;
+const totalForStay = (pricePerNight: number) => pricePerNight * TRIP_NIGHTS;
+const NOT_FOR_ME_REASONS = [
+  "Too expensive",
+  "Too far from the group plan",
+  "Not the right room setup",
+  "Wrong vibe",
+];
 ```
 
 `initialAddedOptionIds` controls which hotels are in the trip when the
 prototype boots. `initialReactions` seeds member reactions so the
-dashboard already shows a clear leading option on first render. The third
-hotel in the catalog is intentionally **not** in the initial trip so the
-presenter has something to add live.
+dashboard already shows a clear leading option on first render.
+`initialReasons` seeds a couple of "Why not for me" notes so the organizer
+sees real friction immediately. The third hotel in the catalog is
+intentionally **not** in the initial trip so the presenter has something to
+add live.
 
 Hotel names, member names, and avatars are illustrative only. Member
 names are sample fictional travelers (Alex, Maya, Jordan, Sam, Priya,
@@ -201,21 +245,31 @@ State shape:
 - `screen` — current screen identifier: `"search" | "empty" | "dashboard" | "ready"`.
 - `addedIds` — string ids for hotels currently in the trip.
 - `reactions` — `Record<optionId, ReactionMap>`.
+- `reasons` — `Record<optionId, ReasonMap>`: the optional "Why not for me"
+  context (chip + optional note) per member, per option.
 - `toast` — single in-flight toast, with an optional `action` discriminator
   (`"view_trip"` shows the "View group trip" CTA; otherwise the toast is
-  informational only, e.g. for the reminder confirmation).
+  informational only, e.g. for the reminder/remove confirmation).
 - `detailOptionId` — id of the option currently shown in the detail modal.
-- `handoffOpen` — boolean for the handoff modal on the ready screen.
 - `remindedMemberIds` — string ids of members the organizer has already
   reminded in the current session.
+
+(The ready/handoff confirmation is local component state in
+`ReadyToBook.tsx`, not global store state.)
 
 Key actions:
 
 - `addOption(hotelId)` — adds the hotel to the trip, seeds an all-null
   reaction map with the current user pre-set to `"yes"`, and fires a
   toast with the "View group trip" action.
+- `removeOption(hotelId)` — removes the hotel and its reactions/reasons
+  from the trip and fires a calm confirmation toast. Front-end only; the
+  product never removes options automatically.
 - `setReaction(optionId, memberId, value)` — updates a single member's
-  reaction on an option.
+  reaction on an option. If the new value is not `"not_for_me"`, any stored
+  reason for that member on that option is cleared.
+- `setNotForMeReason(optionId, memberId, reason)` — stores (or clears, when
+  `null`) a member's "Why not for me" chip + optional note.
 - `sendReminder(memberId)` — organizer micro-interaction. Adds the member
   to `remindedMemberIds` and fires a calm confirmation toast in the form
   *"Reminder sent to {name}."*. Behavior rules:
@@ -229,10 +283,10 @@ Key actions:
     `resetTrip()` / `restoreDemo()`.
   - Copy is warm and low-pressure. The product never uses red badges,
     urgency, or shaming language for inactive members.
-- `resetTrip()` — clears all options, reactions, and reminded members.
-  Used by the dev navigator to demo the empty state.
-- `restoreDemo()` — restores the canonical seeded state and clears
-  reminded members.
+- `resetTrip()` — clears all options, reactions, reasons, and reminded
+  members. Used by the presenter navigator to demo the empty state.
+- `restoreDemo()` — restores the canonical seeded state (options,
+  reactions, reasons) and clears reminded members.
 
 There is no localStorage persistence. Refreshing the page resets to the
 seeded demo state. This is intentional; the demo is meant to be
@@ -368,7 +422,7 @@ Things to deliberately avoid in future iterations:
 
 - Do not add a separate poll, vote, or "cast preference" surface.
 - Do not introduce payment, room selection, or itinerary detail beyond
-  the handoff modal. That is a separate product surface.
+  the ready/handoff screen. That is a separate product surface.
 - Do not introduce a soft hold or inventory hold. The line between
   "decision visibility" and "transaction mechanics" is the strategic
   boundary of the feature.
@@ -428,12 +482,13 @@ Useful commands:
 Presenter notes:
 
 - The demo is meant to be presented in this order: **Search → Add to
-  group trip → View group trip → Dashboard → React → Continue to booking
-  → Handoff modal.**
+  group trip → View group trip → Dashboard → see "Why not for me" → React
+  (with a reason) → optionally Remove a weak option → Continue to booking
+  → Ready/handoff screen → Continue to checkout.**
 - Before presenting, reload the page once so the seeded state is fresh.
-- The floating dev navigator is hidden by default. To enable it during
-  rehearsal, append `?dev=1` to the URL, or press `Alt+Shift+D` on the
-  page. Hide it again before going live to executives.
+- The floating presenter navigator is hidden by default. To enable it
+  during rehearsal, append `?dev=1` to the URL, or press `Alt+Shift+D` on
+  the page. Hide it again before going live to executives.
 
 ---
 
@@ -441,32 +496,40 @@ Presenter notes:
 
 ```
 src/
-  App.tsx                          screen orchestration, modals, dev nav
+  App.tsx                          screen orchestration, detail modal, presenter nav
   main.tsx                         entry point
   index.css                        Tailwind layers and shared button classes
-  data/mockData.ts                 group trip, members, hotel catalog, seeded reactions
+  data/mockData.ts                 group trip, members, hotel catalog, seeded reactions + reasons, pricing helpers
   state/useTripStore.ts            store hook, ranking, readiness logic
   components/
     Avatar.tsx                     avatar, reaction avatar, avatar stack
     ConsensusMeter.tsx             stacked horizontal meter
-    DemoNav.tsx                    floating dev navigator
-    HandoffModal.tsx               centered handoff modal
-    HeroConsensus.tsx              dashboard hero card for the leading option
-    Icon.tsx                       small inline SVG icon set
-    OptionDetailModal.tsx          centered option detail modal (Screen 4)
-    OptionRow.tsx                  compact comparison row
+    DemoNav.tsx                    floating presenter-only navigator
+    HeroConsensus.tsx              dashboard hero card for the leading option (pricing + friction)
+    Icon.tsx                       small inline SVG icon set (incl. Plane/Dots/Trash)
+    OptionDetailModal.tsx          centered option detail modal + reason picker + "Why not for me" (Screen 4)
+    OptionRow.tsx                  compact comparison row (remove menu, pricing, friction)
     Toast.tsx                      bottom-centered toast
     TopNav.tsx                     Expedia-style global navigation
-    TripHeader.tsx                 trip name, dates, members, status pill
-    WhoNeedsPanel.tsx              minimal "Who still needs to weigh in?" panel
+    TripHeader.tsx                 trip name, dates, members, status pill, Hotels/Flights tabs
+    WhoNeedsPanel.tsx              "Who still needs to weigh in?" panel (shows reason chips)
   screens/
     SearchResults.tsx              Screen 1
     EmptyDashboard.tsx             Screen 2
     Dashboard.tsx                  Screen 3
-    ReadyToBook.tsx                Screen 5
+    ReadyToBook.tsx                Screen 5 (single ready/handoff surface)
+
+scripts/
+  capture-gifs.mjs                 Playwright capture → screenshots + ffmpeg GIFs
+
+assets/
+  demo-gifs/                       slide-ready GIFs (raw _video/ is git-ignored)
+  demo-captures/                   final-state PNG screenshots
 
 docs/
   PROTOTYPE_NOTES.md               this file
+  FEEDBACK_CHANGES.md              iteration-2 changelog
+  GIF_CAPTURE_GUIDE.md             shot list + how to capture/use the GIFs
 ```
 
 ---

@@ -42,7 +42,7 @@ export function DemoNav({
         className="fixed bottom-6 right-6 z-30 inline-flex items-center gap-2 rounded-full bg-expedia-navy px-3.5 py-2 text-[12px] font-semibold text-white shadow-cardHover"
       >
         <span className="h-1.5 w-1.5 rounded-full bg-expedia-yellow" />
-        Demo flow
+        Walkthrough
       </button>
     );
   }
@@ -53,7 +53,7 @@ export function DemoNav({
         <div className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-expedia-yellow" />
           <span className="text-[11.5px] font-semibold uppercase tracking-[0.18em]">
-            Prototype flow
+            Presenter walkthrough
           </span>
         </div>
         <button

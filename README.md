@@ -1,73 +1,51 @@
-# React + TypeScript + Vite
+# Expedia Group Trips — Shared Decision-Making Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A high-fidelity, click-through concept prototype of a Group Travel feature
+for Expedia: one shared place where a group can see its current consensus on
+hotel options and move from discussion to booking without leaving Expedia.
 
-Currently, two official plugins are available:
+> **Strategic story.** Group travel decisions usually happen outside
+> Expedia (in group chats), so the booking often leaks to another product.
+> This dashboard keeps the decision inside Expedia by making the group's
+> consensus visible at a glance.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+This is a presentation prototype, not production software: front-end only,
+hardcoded mock data, no backend, no auth, no payment, no real booking.
 
-## React Compiler
+## Run it
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev        # open the URL Vite prints (defaults to http://localhost:5173)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Other commands:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build      # type-check + production build into dist/
+npm run preview    # serve the production build
 ```
+
+A presenter-only walkthrough overlay is hidden by default. Enable it during
+rehearsal with `?dev=1` in the URL or `Alt+Shift+D`; hide it before
+presenting.
+
+## Demo flow
+
+Search results → **Add to group trip** → **View group trip** → dashboard
+(*"The group is leaning toward Wynn Las Vegas"*) → see **Why not for me**
+friction → react (optionally with a reason) → organizer can **remove** a
+weak option → **Continue to booking** → ready/handoff screen.
+
+## Documentation
+
+- [`docs/PROTOTYPE_NOTES.md`](docs/PROTOTYPE_NOTES.md) — full product +
+  engineering notes (scope, flow, data, design tokens).
+- [`docs/FEEDBACK_CHANGES.md`](docs/FEEDBACK_CHANGES.md) — what changed in
+  the latest feedback-driven iteration.
+- [`docs/GIF_CAPTURE_GUIDE.md`](docs/GIF_CAPTURE_GUIDE.md) — slide-ready
+  GIFs/screenshots and how to re-capture them.
+
+## Tech
+
+React 19 · TypeScript · Vite · Tailwind CSS.

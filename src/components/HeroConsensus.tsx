@@ -1,4 +1,4 @@
-import { members } from "../data/mockData";
+import { members, memberById, TRIP_NIGHTS, totalForStay } from "../data/mockData";
 import { ReactionAvatar } from "./Avatar";
 import { ConsensusMeter } from "./ConsensusMeter";
 import {
@@ -19,6 +19,8 @@ export function HeroConsensus({
   onContinue: () => void;
   onOpenDetail: () => void;
 }) {
+  const total = totalForStay(leading.pricePerNight);
+  const reasonEntries = Object.entries(leading.reasonsByMember);
   return (
     <section className="overflow-hidden rounded-2xl border border-expedia-line bg-white shadow-hero">
       <div className="flex">
@@ -50,6 +52,9 @@ export function HeroConsensus({
               <span className="ml-0.5 text-xs font-semibold text-expedia-slate">
                 / night
               </span>
+            </span>
+            <span className="text-[12px] font-medium text-expedia-mute">
+              ${total.toLocaleString()} total · {TRIP_NIGHTS} nights
             </span>
             <span className="inline-flex items-center gap-1">
               <MapPinIcon size={12} /> {leading.location}
@@ -84,6 +89,24 @@ export function HeroConsensus({
               ))}
             </div>
           </div>
+
+          {reasonEntries.length > 0 && (
+            <button
+              onClick={onOpenDetail}
+              className="mt-4 flex w-full items-start gap-2 rounded-xl border border-expedia-warn/25 bg-expedia-warn-soft/50 px-3.5 py-2.5 text-left transition-colors hover:border-expedia-warn/40"
+            >
+              <span className="mt-0.5 text-[11px] font-bold uppercase tracking-wider text-expedia-warn">
+                Why not for me
+              </span>
+              <span className="flex-1 text-[12.5px] leading-snug text-expedia-slate">
+                {reasonEntries
+                  .map(
+                    ([id, r]) => `${memberById(id).name}: ${r.chip.toLowerCase()}`,
+                  )
+                  .join(" · ")}
+              </span>
+            </button>
+          )}
 
           <div className="mt-auto flex flex-wrap items-center gap-3 pt-5">
             <button onClick={onContinue} className="btn-primary">

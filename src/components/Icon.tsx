@@ -155,6 +155,27 @@ export const BellIcon = ({ size = 14, ...props }: IconProps) => (
   </svg>
 );
 
+export const PlaneIcon = ({ size = 16, ...props }: IconProps) => (
+  <svg {...base(size)} {...props}>
+    <path d="M10.5 3.2c.4-.9 1.6-.9 2 0L13 8l7 4.2c.5.3.5 1.1-.1 1.3L13 16l-.5 4.3c-.1.6-.6.9-1 .6L10 19l-3 .8c-.5.1-.9-.3-.7-.8L7.5 16 4 14.4c-.6-.3-.5-1.1.1-1.3L11 11l-.5-7.8z" />
+  </svg>
+);
+
+export const DotsIcon = ({ size = 18, ...props }: IconProps) => (
+  <svg {...base(size)} {...props}>
+    <circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none" />
+    <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" />
+    <circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none" />
+  </svg>
+);
+
+export const TrashIcon = ({ size = 16, ...props }: IconProps) => (
+  <svg {...base(size)} {...props}>
+    <path d="M4 7h16M9 7V5a1.5 1.5 0 011.5-1.5h3A1.5 1.5 0 0115 5v2M6 7l1 12.5A1.5 1.5 0 008.5 21h7a1.5 1.5 0 001.5-1.5L18 7" />
+    <path d="M10 11v6M14 11v6" />
+  </svg>
+);
+
 export const SuitcaseIcon = ({ size = 36, ...props }: IconProps) => (
   <svg {...base(size)} {...props}>
     <rect x="3.5" y="7" width="17" height="13" rx="2.5" />

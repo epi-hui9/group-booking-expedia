@@ -1,15 +1,17 @@
 import { groupTrip, members } from "../data/mockData";
 import { Avatar } from "./Avatar";
-import { ChevronLeftIcon } from "./Icon";
+import { BedIcon, ChevronLeftIcon, PlaneIcon } from "./Icon";
 
 export function TripHeader({
   subline,
   onBack,
   tone = "planning",
+  showTabs = false,
 }: {
   subline?: React.ReactNode;
   onBack: () => void;
   tone?: "planning" | "ready";
+  showTabs?: boolean;
 }) {
   return (
     <div className="border-b border-expedia-line bg-white">
@@ -67,6 +69,24 @@ export function TripHeader({
           </span>
         </div>
       </div>
+
+      {showTabs && (
+        <div className="mx-auto max-w-[1200px] px-8">
+          <div className="flex items-center gap-1.5 pb-px">
+            <span className="inline-flex items-center gap-1.5 rounded-t-lg border-b-2 border-expedia-blue px-3.5 pb-2.5 pt-1 text-[13.5px] font-semibold text-expedia-blue">
+              <BedIcon size={15} />
+              Hotels
+            </span>
+            <span className="inline-flex cursor-default items-center gap-1.5 rounded-t-lg border-b-2 border-transparent px-3.5 pb-2.5 pt-1 text-[13.5px] font-semibold text-expedia-mute">
+              <PlaneIcon size={15} />
+              Flights
+              <span className="ml-0.5 rounded-full bg-expedia-line-soft px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-expedia-slate">
+                Coming soon
+              </span>
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

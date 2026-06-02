@@ -4,10 +4,13 @@ import {
   hotelCatalog,
   initialAddedOptionIds,
   initialReactions,
+  initialReasons,
   members,
   type HotelOption,
+  type NotForMeReason,
   type OptionWithReactions,
   type ReactionMap,
+  type ReasonMap,
   type ReactionValue,
 } from "../data/mockData";
 
@@ -18,13 +21,14 @@ export function useTripStore() {
   const [addedIds, setAddedIds] = useState<string[]>(initialAddedOptionIds);
   const [reactions, setReactions] =
     useState<Record<string, ReactionMap>>(initialReactions);
+  const [reasons, setReasons] =
+    useState<Record<string, ReasonMap>>(initialReasons);
   const [toast, setToast] = useState<{
     id: number;
     title: string;
     action?: "view_trip" | null;
   } | null>(null);
   const [detailOptionId, setDetailOptionId] = useState<string | null>(null);
-  const [handoffOpen, setHandoffOpen] = useState(false);
   const [remindedMemberIds, setRemindedMemberIds] = useState<string[]>([]);
 
   const addOption = useCallback((hotelId: string) => {
@@ -66,19 +70,67 @@ export function useTripStore() {
         map[memberId] = value;
         return { ...prev, [optionId]: map };
       });
+      if (value !== "not_for_me") {
+        setReasons((prev) => {
+          if (!prev[optionId]?.[memberId]) return prev;
+          const map = { ...prev[optionId] };
+          delete map[memberId];
+          return { ...prev, [optionId]: map };
+        });
+      }
     },
     [],
   );
 
+  const setNotForMeReason = useCallback(
+    (optionId: string, memberId: string, reason: NotForMeReason | null) => {
+      setReasons((prev) => {
+        const map = { ...(prev[optionId] ?? {}) };
+        if (reason === null) {
+          delete map[memberId];
+        } else {
+          map[memberId] = reason;
+        }
+        return { ...prev, [optionId]: map };
+      });
+    },
+    [],
+  );
+
+  const removeOption = useCallback((hotelId: string) => {
+    const hotel = hotelCatalog.find((h) => h.id === hotelId);
+    setAddedIds((ids) => ids.filter((id) => id !== hotelId));
+    setReactions((prev) => {
+      const next = { ...prev };
+      delete next[hotelId];
+      return next;
+    });
+    setReasons((prev) => {
+      const next = { ...prev };
+      delete next[hotelId];
+      return next;
+    });
+    setDetailOptionId((current) => (current === hotelId ? null : current));
+    setToast({
+      id: Date.now(),
+      title: hotel
+        ? `${hotel.name} removed from Vegas Weekend.`
+        : "Option removed from Vegas Weekend.",
+      action: null,
+    });
+  }, []);
+
   const resetTrip = useCallback(() => {
     setAddedIds([]);
     setReactions({});
+    setReasons({});
     setRemindedMemberIds([]);
   }, []);
 
   const restoreDemo = useCallback(() => {
     setAddedIds(initialAddedOptionIds);
     setReactions(initialReactions);
+    setReasons(initialReasons);
     setRemindedMemberIds([]);
   }, []);
 
@@ -91,8 +143,9 @@ export function useTripStore() {
         reactionsByMember:
           reactions[hotel.id] ??
           Object.fromEntries(members.map((m) => [m.id, null])),
+        reasonsByMember: reasons[hotel.id] ?? {},
       }));
-  }, [addedIds, reactions]);
+  }, [addedIds, reactions, reasons]);
 
   const dismissToast = useCallback(() => setToast(null), []);
 
@@ -101,14 +154,14 @@ export function useTripStore() {
     setScreen,
     addedIds,
     addOption,
+    removeOption,
     options,
     setReaction,
+    setNotForMeReason,
     toast,
     dismissToast,
     detailOptionId,
     setDetailOptionId,
-    handoffOpen,
-    setHandoffOpen,
     resetTrip,
     restoreDemo,
     remindedMemberIds,

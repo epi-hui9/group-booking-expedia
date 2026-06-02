@@ -4,6 +4,8 @@ import {
   hotelCatalog,
   memberById,
   members,
+  TRIP_NIGHTS,
+  totalForStay,
 } from "../data/mockData";
 import type { TripStore } from "../state/useTripStore";
 import { AvatarStack } from "../components/Avatar";
@@ -165,24 +167,16 @@ export function SearchResults({ store }: { store: TripStore }) {
                         </span>
                       </div>
                       <div className="mt-0.5 text-xs text-expedia-slate">
-                        ${hotel.pricePerNight * 3} total · 3 nights · taxes &
-                        fees included
+                        ${totalForStay(hotel.pricePerNight).toLocaleString()}{" "}
+                        total for {TRIP_NIGHTS} nights · taxes &amp; fees
+                        included
                       </div>
                     </div>
                     {added ? (
-                      <div className="flex items-center gap-3">
-                        <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-expedia-success">
-                          <CheckIcon size={14} strokeWidth={3} />
-                          Added
-                        </span>
-                        <button
-                          onClick={() => store.setScreen("dashboard")}
-                          className="btn-ghost"
-                        >
-                          View group trip
-                          <ArrowRightIcon size={14} />
-                        </button>
-                      </div>
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-expedia-success-soft px-3.5 py-2 text-sm font-semibold text-expedia-success">
+                        <CheckIcon size={14} strokeWidth={3} />
+                        In group trip
+                      </span>
                     ) : (
                       <button
                         onClick={() => store.addOption(hotel.id)}

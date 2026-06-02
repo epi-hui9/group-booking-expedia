@@ -11,7 +11,6 @@ import {
 } from "./state/useTripStore";
 import { Toast } from "./components/Toast";
 import { OptionDetailModal } from "./components/OptionDetailModal";
-import { HandoffModal } from "./components/HandoffModal";
 import { DemoNav } from "./components/DemoNav";
 
 function useDevMode(): boolean {
@@ -39,7 +38,6 @@ export default function App() {
   const detailOption = store.detailOptionId
     ? ranked.find((o) => o.id === store.detailOptionId)
     : null;
-  const leadingForHandoff = ranked.find((o) => o.isLeading) ?? ranked[0];
 
   const renderedScreen =
     store.screen === "dashboard" && store.options.length === 0
@@ -65,13 +63,9 @@ export default function App() {
           onReact={(v) =>
             store.setReaction(detailOption.id, currentUserId, v)
           }
-        />
-      )}
-
-      {store.handoffOpen && leadingForHandoff && (
-        <HandoffModal
-          option={leadingForHandoff}
-          onClose={() => store.setHandoffOpen(false)}
+          onSetReason={(reason) =>
+            store.setNotForMeReason(detailOption.id, currentUserId, reason)
+          }
         />
       )}
 

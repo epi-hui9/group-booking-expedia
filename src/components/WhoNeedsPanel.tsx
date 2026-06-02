@@ -70,6 +70,9 @@ export function WhoNeedsPanel({
         {rows.map(({ m, standing }) => {
           const reminded = remindedMemberIds.includes(m.id);
           const isNoReaction = standing.kind === "no_reaction";
+          const reason = isNoReaction
+            ? undefined
+            : standing.on.reasonsByMember[m.id];
           const label = isNoReaction
             ? "No reaction yet"
             : `Not for me · ${standing.on.name}`;
@@ -90,6 +93,11 @@ export function WhoNeedsPanel({
                   <div className={`text-[12px] font-medium ${tone}`}>
                     {label}
                   </div>
+                  {reason && (
+                    <div className="mt-1 inline-flex items-center rounded-full bg-expedia-warn-soft px-2 py-0.5 text-[11px] font-medium text-expedia-warn">
+                      {reason.chip}
+                    </div>
+                  )}
                 </div>
               </div>
               {isNoReaction &&
